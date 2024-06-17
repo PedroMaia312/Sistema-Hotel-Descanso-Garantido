@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1718634420 source:c:\code block\listas avaliativas\struct e funções\main.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+
