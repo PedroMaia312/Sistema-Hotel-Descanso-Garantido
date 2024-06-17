@@ -93,7 +93,7 @@ void cadastraFuncionario ()
 }
 void cadastraEstadia ()
 {
-
+    printf("teste git");
      printf("entrou");
 }
 void cadastroQuarto ()
