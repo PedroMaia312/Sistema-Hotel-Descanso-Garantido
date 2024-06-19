@@ -3,7 +3,7 @@
 #include <locale.h>
 #include <string.h>
 
-int codigoEstadia = 1;
+int cE = 1;
 int codigoQuarto = 1;
 int codigoFuncionario = 1;
 struct Cliente
@@ -24,10 +24,10 @@ struct Funcionarios
 struct Estadia
 {
     int codigoEstadia;
+    int codigoCliente;
     int entrada[3];
     int saida[3];
     int diarias;
-    int codigoCliente;
     int numeroQuarto;
 };
 struct Quarto
@@ -97,38 +97,87 @@ void cadastraFuncionario ()
 }
 void cadastraEstadia ()
 {
+    char estadia2;
     FILE *estadia;
     estadia = fopen("C:\\Github\\Sistema-Hotel-Descanso-Garantido\\Code\\Txt\\Estadia.txt", "r+");
+    if(!estadia)
+    {
+        printf("Ocorreu um error ao abrir um arquivo");
+        fclose(estadia);
+    }
+    struct Estadia registro;
+    registro.codigoEstadia = cE;
+
+    do
+    {
+        printf("Digite o código do Cliente que deseja se hospedar:\n");
+        scanf("%d", &registro.codigoCliente);
+    }
+    while(registro.codigoCliente < 1);
+
+    do{
+    printf("Digite o dia de entrada do cliente:\n");
+    scanf("%d", &registro.entrada[1]);
+    }while(registro.entrada[1] < 1 || registro.entrada[1] > 31);
+
+    do{
+    printf("Digite o mês de entrada do cliente:\n");
+    scanf("%d", &registro.entrada[2]);
+    }while(registro.entrada[2] < 1 || registro.entrada[1] > 12);
+
+    do{
+    printf("Digite o ano de entrada do cliente:\n");
+    scanf("%d", &registro.entrada[3]);
+    }while(registro.entrada[3] < 2024);
+
+    do{
+    printf("Digite o dia de saída do cliente:\n");
+    scanf("%d", &registro.saida[1]);
+    }while(registro.saida[1] < 1 || registro.saida[1] > 31);
+
+    do{
+    printf("Digite o mês de saída do cliente:\n");
+    scanf("%d", &registro.saida[2]);
+    }while(registro.saida[2] < 1 || registro.saida[2] > 12);
+
+    do{
+    printf("Digite o ano de saída do cliente:\n");
+    scanf("%d", &registro.saida[3]);
+    }while(registro.saida[3] < registro.entrada[3]);
 
     fclose(estadia);
+
 }
 void cadastroQuarto ()
 {
     char quarto2;
     FILE *quarto;
     quarto = fopen("C:\\Github\\Sistema-Hotel-Descanso-Garantido\\Code\\Txt\\Quartos.txt", "r+");
-    do{
-    if(!quarto)
-    {
-        printf("Deu algo errado em abrir o codigo");
-        exit(1);
-    }
-    struct Quarto registro;
-    printf("Qual o numero do quarto que você deseja registrar:\n");
-    scanf("%d", &registro.numeroQuarto);
-    printf("Quantos hospestes cabem dentro deste quarto:\n");
-    scanf("%d", &registro.hospedes);
-    printf("Quanto é a diaria deste quarto:\n");
-    scanf("%f", &registro.valorDiario);
     do
     {
-    printf("Qual o status do quarto ele esta desocupado ou ocupado:\n");
-    gets(registro.status);
-    }while((strcmp(registro.status, "desocupado") != 0 && strcmp(registro.status, "ocupado") != 0));
-    fprintf(quarto, "%d, %d, %.2f, %s\n", registro.numeroQuarto, registro.hospedes, registro.valorDiario, registro.status);
-    printf("Você deseja cadastrar mais um quarto('s' para sim e 'n' para não):\n");
-    scanf(" %c", &quarto2);
-    }while(quarto2 != 'n');
+        if(!quarto)
+        {
+            printf("Ocorreu um error ao abrir um arquivo");
+            exit(1);
+        }
+        struct Quarto registro;
+        printf("Qual o numero do quarto que você deseja registrar:\n");
+        scanf("%d", &registro.numeroQuarto);
+        printf("Quantos hospestes cabem dentro deste quarto:\n");
+        scanf("%d", &registro.hospedes);
+        printf("Quanto é a diaria deste quarto:\n");
+        scanf("%f", &registro.valorDiario);
+        do
+        {
+            printf("Qual o status do quarto ele esta desocupado ou ocupado:\n");
+            gets(registro.status);
+        }
+        while((strcmp(registro.status, "desocupado") != 0 && strcmp(registro.status, "ocupado") != 0));
+        fprintf(quarto, "%d, %d, %.2f, %s\n", registro.numeroQuarto, registro.hospedes, registro.valorDiario, registro.status);
+        printf("Você deseja cadastrar mais um quarto('s' para sim e 'n' para não):\n");
+        scanf(" %c", &quarto2);
+    }
+    while(quarto2 != 'n');
     fclose (quarto);
 }
 
