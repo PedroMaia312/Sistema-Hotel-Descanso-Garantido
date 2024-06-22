@@ -3,9 +3,6 @@
 #include <locale.h>
 #include <string.h>
 
-int cE = 1;
-int codigoQuarto = 1;
-int codigoFuncionario = 1;
 struct Cliente
 {
     int codigo;
@@ -99,8 +96,9 @@ void cadastraFuncionario ()
 void cadastraEstadia ()
 {
     char estadia2;
-    FILE *estadia;
-    estadia = fopen("C:\\Github\\Sistema-Hotel-Descanso-Garantido\\Code\\Txt\\Estadia.txt", "r+");
+    FILE *estadia, *quarto;
+    estadia = fopen("Estadia.txt", "r+");
+    quarto = fopen("Quartos.txt", "r");
     if(!estadia)
     {
         printf("Ocorreu um error ao abrir um arquivo");
@@ -109,7 +107,7 @@ void cadastraEstadia ()
     do
     {
         struct Estadia registro;
-        registro.codigoEstadia = cE;
+        registro.codigoEstadia =
         fprintf(estadia,"Estadia: %d {\n", registro.codigoEstadia);
         do
         {
@@ -132,7 +130,6 @@ void cadastraEstadia ()
             printf("Digite o ano de entrada do cliente:\n");
             scanf("%d", &registro.entrada[3]);
         }while(registro.entrada[3] < 2024);
-        fprintf(estadia, "Data da entrada: %d/%d/%d", registro.entrada[1],registro.entrada[2],registro.entrada[3]);
         do
         {
             printf("Digite o dia de saída do cliente:\n");
@@ -148,10 +145,9 @@ void cadastraEstadia ()
             printf("Digite o ano de saída do cliente:\n");
             scanf("%d", &registro.saida[3]);
         }while(registro.saida[3] < registro.entrada[3]);
-        fprintf(estadia, "Data da saída: %d/%d/%d", registro.saida[1],registro.saida[2],registro.saida[3]);
 
 
-        int dias = calculaDiarias (registro.entrada[3], registro.saida[3]);
+
 
 
         printf("Deseja cadastrar mais alguma estadia('s' para sim e 'n' para não):\n");
@@ -159,13 +155,14 @@ void cadastraEstadia ()
     }
     while(estadia2 != 'n');
     fclose(estadia);
-    cE++;
+    fclose(quarto);
+
 }
 void cadastroQuarto ()
 {
     char quarto2;
     FILE *quarto;
-    quarto = fopen("C:\\Github\\Sistema-Hotel-Descanso-Garantido\\Code\\Txt\\Quartos.txt", "r+");
+    quarto = fopen("Quartos.txt", "r+");
     struct Quarto registro;
     if(!quarto)
     {
@@ -180,28 +177,25 @@ void cadastroQuarto ()
             scanf("%d", &registro.numeroQuarto);
         }
         while(registro.numeroQuarto < 100);
-        fprintf(quarto, "Quarto %d \n{\n", registro.numeroQuarto);
         do
         {
             printf("Quantos hospestes cabem dentro deste quarto:\n");
             scanf("%d", &registro.hospedes);
         }
         while(registro.hospedes < 0);
-        fprintf(quarto, "Quantos hospedes cabem: %d \n", registro.hospedes);
         do
         {
             printf("Quanto é a diaria deste quarto:\n");
             scanf("%f", &registro.valorDiario);
         }
         while(registro.valorDiario < 0.01);
-        fprintf(quarto,"Valor da diaria: %.2f \n", registro.valorDiario);
         do
         {
             printf("Qual o status do quarto ele esta desocupado ou ocupado:\n");
             gets(registro.status);
         }
         while((strcmp(registro.status, "desocupado") != 0 && strcmp(registro.status, "ocupado") != 0));
-        fprintf(quarto, "Status do quarto: %s \n}\n", registro.status);
+        fprintf(quarto, "\n%d;%d;%.2f;%s;", registro.numeroQuarto, registro.hospedes, registro.valorDiario, registro.status);
         printf("Você deseja cadastrar mais um quarto('s' para sim e 'n' para não):\n");
         scanf(" %c", &quarto2);
     }

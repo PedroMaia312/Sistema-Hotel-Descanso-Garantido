@@ -1,0 +1,6 @@
+
+101;1;35,00;desocupado;
+102;2;57,00;desocupado;
+103;3;76,73;desocupado;
+104;4;95,00;desocupado;
+105;5;115,00;desocupado;
