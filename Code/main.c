@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
+#include <ctype.h>
 
 struct Cliente
 {
@@ -99,16 +100,29 @@ void cadastraEstadia ()
     FILE *estadia, *quarto;
     estadia = fopen("Estadia.txt", "r+");
     quarto = fopen("Quartos.txt", "r");
+    int hospedes;
+    int dias;
+     struct Estadia registro;
+    char linha[200];
+    char ultimalinha[200];
+    char delimitador[] = ";";
     if(!estadia)
     {
         printf("Ocorreu um error ao abrir um arquivo");
         fclose(estadia);
     }
+    if(!quarto)
+    {
+        printf("Ocorreu um error ao abrir um arquivo");
+        fclose(quarto);
+    }
     do
     {
-        struct Estadia registro;
-        registro.codigoEstadia =
-        fprintf(estadia,"Estadia: %d {\n", registro.codigoEstadia);
+        while(fgets(linha, sizeof(linha), estadia) != NULL)
+    {
+        strcpy(ultimalinha, linha);
+    }
+        registro.codigoEstadia = atoi(strtok(ultimalinha, delimitador));
         do
         {
             printf("Digite o código do Cliente que deseja se hospedar:\n");
@@ -145,8 +159,10 @@ void cadastraEstadia ()
             printf("Digite o ano de saída do cliente:\n");
             scanf("%d", &registro.saida[3]);
         }while(registro.saida[3] < registro.entrada[3]);
-
-
+        do{
+            printf("Digite quantos hospedes iram ser hospedados:\n");
+            scanf("%d", &hospedes);
+        }while (hospedes < 0);
 
 
 
