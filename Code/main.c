@@ -45,8 +45,9 @@ void finalizarEstadia ();
 int main()
 {
     setlocale(LC_ALL, "portuguese");
-    cadastraCliente();
-    cadastraFuncionario();
+    //cadastraCliente();
+    //cadastraFuncionario();
+    pesquisaPessoas();
     return 0;
 }
 
@@ -56,29 +57,31 @@ void cadastraCliente()
     fluxo = fopen("Clientes.txt", "a+");
     struct Cliente clienteatual;
     int erro = 0;
-    do{
-    erro = 0;
-    printf("digite o nome do cliente:\n");
-    gets(clienteatual.nome);
-    for (int i = 0;i < strlen(clienteatual.nome);i++)
+    do
     {
-        if(isalpha(clienteatual.nome[i]) == 0 && clienteatual.nome[i] != ' ')
+        erro = 0;
+        printf("digite o nome do cliente:\n");
+        gets(clienteatual.nome);
+        for (int i = 0; i < strlen(clienteatual.nome); i++)
         {
-            erro++;
+            if(isalpha(clienteatual.nome[i]) == 0 && clienteatual.nome[i] != ' ')
+            {
+                erro++;
+            }
+        }
+        printf("digite o endereço do cliente:\n");
+        gets(clienteatual.endereco);
+        printf("digite o numero do cliente:\n");
+        gets(clienteatual.numero);
+        for (int i = 0; i < strlen(clienteatual.numero); i++)
+        {
+            if(isdigit(clienteatual.numero[i]) == 0)
+            {
+                erro++;
+            }
         }
     }
-    printf("digite o endereço do cliente:\n");
-    gets(clienteatual.endereco);
-    printf("digite o numero do cliente:\n");
-    gets(clienteatual.numero);
-    for (int i = 0;i < strlen(clienteatual.numero);i++)
-    {
-        if(isdigit(clienteatual.numero[i]) == 0)
-        {
-            erro++;
-        }
-    }
-    }while(erro != 0);
+    while(erro != 0);
     char linha[200];
     char ultimalinha[200];
     char delimitador[] = ";";
@@ -87,6 +90,7 @@ void cadastraCliente()
         strcpy(ultimalinha, linha);
     }
     clienteatual.codigo = atoi(strtok(ultimalinha, delimitador));
+    printf("seu codigo para futuras pesquisas é %d \n", clienteatual.codigo + 1);
     fprintf(fluxo, "\n%d;%s;%s;%s;", clienteatual.codigo + 1,clienteatual.nome,clienteatual.endereco,clienteatual.numero);
     fclose(fluxo);
 }
@@ -97,45 +101,47 @@ void cadastraFuncionario()
     fluxo = fopen("Funcionarios.txt", "a+");
     struct Funcionarios funcionarioatual;
     int erro = 0;
-    do{
-    erro = 0;
-    printf("digite o nome do funcionario:\n");
-    gets(funcionarioatual.nome);
-    for (int i = 0;i < strlen(funcionarioatual.nome);i++)
+    do
     {
-        if(isalpha(funcionarioatual.nome[i]) == 0 && funcionarioatual.nome[i] != ' ')
+        erro = 0;
+        printf("digite o nome do funcionario:\n");
+        gets(funcionarioatual.nome);
+        for (int i = 0; i < strlen(funcionarioatual.nome); i++)
         {
-            erro++;
+            if(isalpha(funcionarioatual.nome[i]) == 0 && funcionarioatual.nome[i] != ' ')
+            {
+                erro++;
+            }
+        }
+        printf("digite o cargo do funcionario:\n");
+        gets(funcionarioatual.cargo);
+        for (int i = 0; i < strlen(funcionarioatual.cargo); i++)
+        {
+            if(isalpha(funcionarioatual.cargo[i]) == 0 && funcionarioatual.cargo[i] != ' ')
+            {
+                erro++;
+            }
+        }
+        printf("digite o numero do funcionario:\n");
+        gets(funcionarioatual.numero);
+        for (int i = 0; i < strlen(funcionarioatual.numero); i++)
+        {
+            if(isdigit(funcionarioatual.numero[i]) == 0)
+            {
+                erro++;
+            }
+        }
+        printf("digite o salario do funcionario:\n");
+        gets(funcionarioatual.salario);
+        for (int i = 0; i < strlen(funcionarioatual.salario); i++)
+        {
+            if(isdigit(funcionarioatual.salario[i]) == 0 && funcionarioatual.salario[i] != ',')
+            {
+                erro++;
+            }
         }
     }
-    printf("digite o cargo do funcionario:\n");
-    gets(funcionarioatual.cargo);
-    for (int i = 0;i < strlen(funcionarioatual.cargo);i++)
-    {
-        if(isalpha(funcionarioatual.cargo[i]) == 0 && funcionarioatual.cargo[i] != ' ')
-        {
-            erro++;
-        }
-    }
-    printf("digite o numero do funcionario:\n");
-    gets(funcionarioatual.numero);
-    for (int i = 0;i < strlen(funcionarioatual.numero);i++)
-    {
-        if(isdigit(funcionarioatual.numero[i]) == 0)
-        {
-            erro++;
-        }
-    }
-    printf("digite o salario do funcionario:\n");
-    gets(funcionarioatual.salario);
-    for (int i = 0;i < strlen(funcionarioatual.salario);i++)
-    {
-        if(isdigit(funcionarioatual.salario[i]) == 0 && funcionarioatual.salario[i] != ',')
-        {
-            erro++;
-        }
-    }
-    }while(erro != 0);
+    while(erro != 0);
     char linha[200];
     char ultimalinha[200];
     char delimitador[] = ";";
@@ -144,6 +150,7 @@ void cadastraFuncionario()
         strcpy(ultimalinha, linha);
     }
     funcionarioatual.codigo = atoi(strtok(ultimalinha, delimitador));
+    printf("seu codigo para futuras pesquisas é %d \n", funcionarioatual.codigo + 1);
     fprintf(fluxo, "\n%d;%s;%s;%s;%s;", funcionarioatual.codigo + 1,funcionarioatual.nome,funcionarioatual.cargo,funcionarioatual.numero,funcionarioatual.salario);
     fclose(fluxo);
 }
@@ -163,9 +170,138 @@ void finalizarEstadia ()
     printf("entrou");
 }
 
-void pesquisaPessoas ()
+void pesquisaPessoas()
 {
-    printf("entrou");
+    FILE *fluxo;
+    int tipopessoa;
+    int tipopesquisa;
+    char linha[250];
+    char codigo[11];
+    char nome[100];
+    char delimitador[] = ";";
+    int certo = 0;
+
+    do
+    {
+        printf("Você deseja saber as informações de um Cliente ou de um Funcionário? Digite '1' para cliente e '2' para funcionário: ");
+        scanf("%d", &tipopessoa);
+        while (getchar() != '\n');
+    }
+    while(tipopessoa != 1 && tipopessoa != 2);
+
+    do
+    {
+        printf("Você deseja pesquisar usando o seu código ou seu nome? (se lembre que o nome deve ser exatamente igual ao cadastrado) Digite '1' para código e '2' para nome: ");
+        scanf("%d", &tipopesquisa);
+        while (getchar() != '\n');
+    }
+    while(tipopesquisa != 1 && tipopesquisa != 2);
+
+    if(tipopessoa == 1)
+    {
+        fluxo = fopen("Clientes.txt", "r");
+    }
+    else
+    {
+        fluxo = fopen("Funcionarios.txt", "r");
+    }
+    if(tipopesquisa == 1)
+    {
+    printf("Digite o seu código:\n");
+    fgets(codigo, sizeof(codigo), stdin);
+    codigo[strcspn(codigo, "\n")] = '\0';
+    }
+    else
+    {
+    printf("Digite o seu nome:\n");
+    fgets(nome, sizeof(nome), stdin);
+    nome[strcspn(nome, "\n")] = '\0';
+    }
+    while(fgets(linha, sizeof(linha), fluxo) != NULL)
+    {
+        char *campo = strtok(linha, delimitador);
+
+        // Pesquisa cliente
+        if(tipopessoa == 1)
+        {
+            // Pesquisa por código
+            if(tipopesquisa == 1)
+            {
+                if(strcmp(campo, codigo) == 0)
+                {
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu nome é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu endereço é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu número é %s\n", campo);
+                    certo++;
+                    break;
+                }
+            }
+
+            // Pesquisa por nome
+            if(tipopesquisa == 2)
+            {
+                campo = strtok(NULL, delimitador);
+                if(strcmp(campo, nome) == 0)
+                {
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu endereço é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu número é %s\n", campo);
+                    certo++;
+                    break;
+                }
+            }
+        }
+
+        // Pesquisa funcionário
+        if(tipopessoa == 2)
+        {
+            // Pesquisa por código
+            if(tipopesquisa == 1)
+            {
+                if(strcmp(campo, codigo) == 0)
+                {
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu nome é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu cargo é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu número é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu salário é %s\n", campo);
+                    certo++;
+                    break;
+                }
+            }
+
+            // Pesquisa por nome
+            if(tipopesquisa == 2)
+            {
+                campo = strtok(NULL, delimitador);
+                if(strcmp(campo, nome) == 0)
+                {
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu cargo é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu número é %s\n", campo);
+                    campo = strtok(NULL, delimitador);
+                    printf("O seu salário é %s\n", campo);
+                    certo++;
+                    break;
+                }
+            }
+        }
+    }
+
+    if(certo == 0)
+    {
+        printf("Não foi possível encontrar nenhum Cliente/Funcionário com o Código/Nome digitado.\n");
+    }
+
+    fclose(fluxo);
 }
 void achaEstadia ()
 {
