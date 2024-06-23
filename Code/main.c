@@ -99,10 +99,12 @@ void cadastraEstadia ()
     char estadia2;
     FILE *estadia, *quarto;
     estadia = fopen("Estadia.txt", "r+");
-    quarto = fopen("Quartos.txt", "r");
+    quarto = fopen("Quartos.txt", "r+");
     int hospedes;
+    int comphospedes;
     int dias;
-     struct Estadia registro;
+    int numQuart;
+    struct Estadia registro;
     char linha[200];
     char ultimalinha[200];
     char delimitador[] = ";";
@@ -119,9 +121,9 @@ void cadastraEstadia ()
     do
     {
         while(fgets(linha, sizeof(linha), estadia) != NULL)
-    {
-        strcpy(ultimalinha, linha);
-    }
+        {
+            strcpy(ultimalinha, linha);
+        }
         registro.codigoEstadia = atoi(strtok(ultimalinha, delimitador));
         do
         {
@@ -133,41 +135,68 @@ void cadastraEstadia ()
         {
             printf("Digite o dia de entrada do cliente:\n");
             scanf("%d", &registro.entrada[1]);
-        }while(registro.entrada[1] < 1 || registro.entrada[1] > 31);
+        }
+        while(registro.entrada[1] < 1 || registro.entrada[1] > 31);
         do
         {
             printf("Digite o mês de entrada do cliente:\n");
             scanf("%d", &registro.entrada[2]);
-        }while(registro.entrada[2] < 1 || registro.entrada[1] > 12);
+        }
+        while(registro.entrada[2] < 1 || registro.entrada[1] > 12);
         do
         {
             printf("Digite o ano de entrada do cliente:\n");
             scanf("%d", &registro.entrada[3]);
-        }while(registro.entrada[3] < 2024);
+        }
+        while(registro.entrada[3] < 2024);
         do
         {
             printf("Digite o dia de saída do cliente:\n");
             scanf("%d", &registro.saida[1]);
-        }while(registro.saida[1] < 1 || registro.saida[1] > 31);
+        }
+        while(registro.saida[1] < 1 || registro.saida[1] > 31);
         do
         {
             printf("Digite o mês de saída do cliente:\n");
             scanf("%d", &registro.saida[2]);
-        }while(registro.saida[2] < 1 || registro.saida[2] > 12);
+        }
+        while(registro.saida[2] < 1 || registro.saida[2] > 12);
         do
         {
             printf("Digite o ano de saída do cliente:\n");
             scanf("%d", &registro.saida[3]);
-        }while(registro.saida[3] < registro.entrada[3]);
-        do{
+        }
+        while(registro.saida[3] < registro.entrada[3]);
+        do
+        {
             printf("Digite quantos hospedes iram ser hospedados:\n");
             scanf("%d", &hospedes);
-        }while (hospedes < 0);
+        }
+        while (hospedes < 1);
+        while(fgets(linha, sizeof(linha), quarto) != NULL)
+        {
+           char *campo = strtok(linha, delimitador);
+            campo = strtok(NULL, delimitador);
+            comphospedes = atoi(campo);
+            if(hospedes == comphospedes)
+            {
+                campo = strtok(NULL, delimitador);
+                campo = strtok(NULL, delimitador);
+                if(strcmp(campo, "desocupado") == 0)
+                {
+                    campo = "ocupado";
+                    char *campo2 = strtok(linha, delimitador);
+                    numQuart = atoi(campo2);
+                    break;
+                }
+            }
+        }
 
 
 
         printf("Deseja cadastrar mais alguma estadia('s' para sim e 'n' para não):\n");
         scanf(" %c", &estadia2);
+        fprintf(estadia,"%d", registro.codigoEstadia + 1);
     }
     while(estadia2 != 'n');
     fclose(estadia);
@@ -211,7 +240,7 @@ void cadastroQuarto ()
             gets(registro.status);
         }
         while((strcmp(registro.status, "desocupado") != 0 && strcmp(registro.status, "ocupado") != 0));
-        fprintf(quarto, "\n%d;%d;%.2f;%s;", registro.numeroQuarto, registro.hospedes, registro.valorDiario, registro.status);
+        fprintf(quarto, "%d;%d;%.2f;%s;\n", registro.numeroQuarto, registro.hospedes, registro.valorDiario, registro.status);
         printf("Você deseja cadastrar mais um quarto('s' para sim e 'n' para não):\n");
         scanf(" %c", &quarto2);
     }
