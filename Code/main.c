@@ -25,7 +25,7 @@ struct Estadia
     int codigoCliente;
     int entrada[3];
     int saida[3];
-    int diarias;
+    float diarias;
     int numeroQuarto;
 };
 struct Quarto
@@ -42,7 +42,7 @@ void cadastroQuarto ();
 void achaEstadia ();
 void pesquisaPessoas ();
 void finalizarEstadia ();
-int calculaDiarias ();
+int calculaDiarias (int entrada[3], int saida[3]);
 int main()
 {
     setlocale(LC_ALL, "portuguese");
@@ -103,7 +103,7 @@ void cadastraEstadia ()
     int hospedes;
     int comphospedes;
     int dias;
-    int numQuart;
+    long pos;
     struct Estadia registro;
     char linha[200];
     char ultimalinha[200];
@@ -142,7 +142,7 @@ void cadastraEstadia ()
             printf("Digite o mês de entrada do cliente:\n");
             scanf("%d", &registro.entrada[2]);
         }
-        while(registro.entrada[2] < 1 || registro.entrada[1] > 12);
+        while(registro.entrada[2] < 1 && registro.entrada[1] > 12);
         do
         {
             printf("Digite o ano de entrada do cliente:\n");
@@ -175,25 +175,30 @@ void cadastraEstadia ()
         while (hospedes < 1);
         while(fgets(linha, sizeof(linha), quarto) != NULL)
         {
-           char *campo = strtok(linha, delimitador);
+            pos = ftell(quarto) - strlen(linha);
+            char *campo = strtok(linha, delimitador);
             campo = strtok(NULL, delimitador);
             comphospedes = atoi(campo);
             if(hospedes == comphospedes)
             {
                 campo = strtok(NULL, delimitador);
+                registro.diarias = atoi(campo);
                 campo = strtok(NULL, delimitador);
+
                 if(strcmp(campo, "desocupado") == 0)
                 {
-                    campo = "ocupado";
                     char *campo2 = strtok(linha, delimitador);
-                    numQuart = atoi(campo2);
+                    registro.numeroQuarto = atoi(campo2);
+                    fseek(quarto, pos, SEEK_SET);
+                    fprintf(quarto, "%d;%d;%.2f;ocupado;", registro.numeroQuarto, hospedes, registro.diarias);
                     break;
                 }
             }
         }
-
-
-
+        dias = calculaDiarias(registro.entrada, registro.saida);
+        printf("\n%d \n", dias);
+        registro.diarias = registro.diarias * dias;
+        fprintf(estadia, "\n%d;%d;%d/%d/%d;"/*%d/%d/%d;%.2f;%d Consertar*/, registro.codigoEstadia, registro.codigoCliente, registro.entrada[1], registro.entrada[2], registro.entrada[3], registro.saida[1], registro.saida[2], registro.saida[3], registro.diarias, registro.numeroQuarto);
         printf("Deseja cadastrar mais alguma estadia('s' para sim e 'n' para não):\n");
         scanf(" %c", &estadia2);
         fprintf(estadia,"%d", registro.codigoEstadia + 1);
@@ -261,8 +266,9 @@ void achaEstadia ()
 {
 
 }
-int calculaDiarias (int entrada[3], int saida[3])
+int calculaDiarias (int entrada[], int saida[])
 {
+
     int dias = 0;
     if(entrada[2] < saida[2])
     {
