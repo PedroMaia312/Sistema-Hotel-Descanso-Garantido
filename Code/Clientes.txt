@@ -1,0 +1,8 @@
+1;clienteteste;teste;99999999999;
+2;joao;aa;0;
+3;vitor;santana;33;
+4;ber;40];30;
+5;fgdgdfs;fgdgfd;545;
+6;;334535;55;
+7;jjj;fdfsgdsg;45634634;
+8;vitor;fa;4;

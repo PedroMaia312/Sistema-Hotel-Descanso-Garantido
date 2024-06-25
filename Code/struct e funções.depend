@@ -1,13 +1,11 @@
-# depslib dependency file v1.0
-1718634420 source:c:\code block\listas avaliativas\struct e funções\main.c
-	<stdio.h>
-	<stdlib.h>
-	<locale.h>
+1718634420 source:c:\code block\listas avaliativas\struct e funÃ§Ãµes\main.c
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <locale.h>
 
 1719336433 source:c:\github\sistema-hotel-descanso-garantido\code\main.c
-	<stdio.h>
-	<stdlib.h>
-	<locale.h>
-	<string.h>
-	<ctype.h>
-
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <locale.h>
+    #include <string.h>
+    #include <ctype.h>
