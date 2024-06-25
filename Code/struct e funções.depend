@@ -4,3 +4,10 @@
 	<stdlib.h>
 	<locale.h>
 
+1719336433 source:c:\github\sistema-hotel-descanso-garantido\code\main.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+	<string.h>
+	<ctype.h>
+
