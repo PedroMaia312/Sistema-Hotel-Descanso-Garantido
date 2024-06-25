@@ -5,3 +5,4 @@
 5;cria;comedor de cu;69;5000;
 6;gu;fisk;444;445;
 7;hghg;hgfhgf;654546;546564;
+8;pedrin;trabalhar;555;3244;
