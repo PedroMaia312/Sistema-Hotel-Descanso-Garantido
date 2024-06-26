@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <locale.h>
 #include <string.h>
 #include <ctype.h>
+#include <locale.h>
 
 struct Cliente
 {
@@ -44,16 +44,17 @@ void pesquisaPessoas ();
 void finalizarEstadia ();
 int main()
 {
-    setlocale(LC_ALL, "portuguese");
     int menu;
+    setlocale(LC_ALL, "Portuguese");
     do
     {
         printf("Escolha oque voce ira fazer no sistema:\n");
         printf(" 1 - Cadastras cliente \n 2 - Cadastrar funcionario \n 3 - Cadastrar Estadia\n 4 - Cadastrar Quarto \n 5 - Pesquisar por pessoas \n 6 - Baixa em Estadia \n 7 - Pesquisar Estadia \n 0 - Sair \n");
         scanf("%d", &menu);
+        while (getchar() != '\n');
         if(menu < 0 || menu > 7)
         {
-            printf("Digite entre as opções do menu! \n");
+            printf("Digite entre as opçoes do menu! \n");
         }
         switch(menu)
         {
@@ -107,7 +108,7 @@ void cadastraCliente()
                 erro++;
             }
         }
-        printf("digite o endereço do cliente:\n");
+        printf("digite o endereco do cliente:\n");
         gets(clienteatual.endereco);
         printf("digite o numero do cliente:\n");
         gets(clienteatual.numero);
@@ -132,8 +133,9 @@ void cadastraCliente()
     }
     //le o codigo do ultimo cliente cadastrado e da o codigo + 1 para o proximo cliente cadastrado
     clienteatual.codigo = atoi(strtok(ultimalinha, delimitador));
-    printf("seu codigo para futuras pesquisas é %d \n", clienteatual.codigo + 1);
+    printf("seu codigo para futuras pesquisas e %d \n", clienteatual.codigo + 1);
     //coloca as infomações no arquivo txt, neste formato: codigo;nome;endereco;numero;
+    fflush(fluxo);
     fprintf(fluxo, "\n%d;%s;%s;%s;", clienteatual.codigo + 1,clienteatual.nome,clienteatual.endereco,clienteatual.numero);
     fclose(fluxo);
 
@@ -202,18 +204,20 @@ void cadastraFuncionario()
     }
     //le o codigo do ultimo cliente cadastrado e da o codigo + 1 para o proximo cliente cadastrado
     funcionarioatual.codigo = atoi(strtok(ultimalinha, delimitador));
-    printf("seu codigo para futuras pesquisas é %d \n", funcionarioatual.codigo + 1);
+    printf("seu codigo para futuras pesquisas e %d \n", funcionarioatual.codigo + 1);
     //coloca as infomações no arquivo txt, neste formato: codigo;nome;cargo;numero;salario;
+    fflush(fluxo);
     fprintf(fluxo, "\n%d;%s;%s;%s;%s;", funcionarioatual.codigo + 1,funcionarioatual.nome,funcionarioatual.cargo,funcionarioatual.numero,funcionarioatual.salario);
     fclose(fluxo);
 }
 void cadastraEstadia ()
 {
     char estadia2;
-    FILE *estadia, *quarto;
+    FILE *estadia, *quarto, *cliente;
     estadia = fopen("Estadia.txt", "a+");
     quarto = fopen("Quartos.txt", "r+");
-    int hospedes;
+    cliente = fopen("Clientes.txt", "r");
+    int hospedes, certo = 0;
     int comphospedes;
     long pos;
     struct Estadia registro;
@@ -239,10 +243,23 @@ void cadastraEstadia ()
         registro.codigoEstadia = atoi(strtok(ultimalinha, delimitador));
         do
         {
-            printf("Digite o código do Cliente que deseja se hospedar:\n");
+            printf("Digite o codigo do Cliente que deseja se hospedar:\n");
             scanf("%d", &registro.codigoCliente);
         }while(registro.codigoCliente < 1);
-
+        while(fgets(linha, sizeof(linha), cliente) != NULL)
+        {
+            char*campo = strtok(linha, delimitador);
+            int compcodigo = atoi(campo);
+            if(compcodigo == registro.codigoCliente)
+            {
+                certo++;
+            }
+        }
+        if(certo == 0)
+            {
+                printf("\nNenhum cliente tem esse codigo");
+                break;
+            }
         do
         {
             printf("Digite o dia de entrada do cliente:\n");
@@ -251,7 +268,7 @@ void cadastraEstadia ()
         while(registro.entrada[0] < 1 || registro.entrada[0] > 31);
         do
         {
-            printf("Digite o mês de entrada do cliente:\n");
+            printf("Digite o mes de entrada do cliente:\n");
             scanf("%d", &registro.entrada[1]);
         }
         while(registro.entrada[1] < 1 && registro.entrada[1] > 12);
@@ -263,19 +280,19 @@ void cadastraEstadia ()
         while(registro.entrada[2] < 2024);
         do
         {
-            printf("Digite o dia de saída do cliente:\n");
+            printf("Digite o dia de saida do cliente:\n");
             scanf("%d", &registro.saida[0]);
         }
         while(registro.saida[0] < 1 || registro.saida[0] > 31);
         do
         {
-            printf("Digite o mês de saída do cliente:\n");
+            printf("Digite o mws de saida do cliente:\n");
             scanf("%d", &registro.saida[1]);
         }
         while(registro.saida[1] < 1 || registro.saida[1] > 12);
         do
         {
-            printf("Digite o ano de saída do cliente:\n");
+            printf("Digite o ano de saida do cliente:\n");
             scanf("%d", &registro.saida[2]);
         }
         while(registro.saida[2] < registro.entrada[2]);
@@ -283,8 +300,9 @@ void cadastraEstadia ()
         {
             printf("Digite quantos hospedes iram ser hospedados:");
             scanf("%d", &hospedes);
-        }
-        while (hospedes < 1);
+        } while (hospedes < 1);
+        certo = 0;
+        int certo2 = 0;
         while (getchar() != '\n');
         while(fgets(linha, sizeof(linha), quarto) != NULL)
         {
@@ -298,15 +316,26 @@ void cadastraEstadia ()
                 campo = strtok(NULL, delimitador);
                 registro.diarias = atoi(campo);
                 campo = strtok(NULL, delimitador);
-
+                certo++;
                 if(strcmp(campo, "des") == 0)
                 {
                     fseek(quarto, pos, SEEK_SET);
                     fflush(quarto);
                     fprintf(quarto, "%d;%d;%.2f;ocu;", registro.numeroQuarto, hospedes, registro.diarias);
+                    certo2++;
                     break;
                 }
             }
+        }
+        if(certo == 0)
+        {
+            printf("Nao existe um quarto com esse numero de hospedes.\n");
+            break;
+        }
+        if(certo2 == 0)
+        {
+            printf("Nao existe um quarto disponivel com esse numero de hospedes.\n");
+            break;
         }
         int dias = 0;
         dias = registro.saida[0] - registro.entrada[0];
@@ -343,7 +372,7 @@ void cadastroQuarto ()
     {
         do
         {
-            printf("Qual o numero do quarto que você deseja registrar:\n");
+            printf("Qual o numero do quarto que voce deseja registrar:\n");
             scanf("%d", &registro.numeroQuarto);
         }
         while(registro.numeroQuarto < 100);
@@ -355,25 +384,24 @@ void cadastroQuarto ()
         while(registro.hospedes < 0);
         do
         {
-            printf("Quanto é a diaria deste quarto:\n");
+            printf("Quanto e a diaria deste quarto:\n");
             scanf("%f", &registro.valorDiario);
         }
         while(registro.valorDiario < 0.01);
         do
         {
             while (getchar() != '\n');
-            printf("Qual o status do quarto ele esta (des para desocupado ou ocu para ocupado):\n");
+            printf("Qual o status do quarto ele esta (des = desocupado ou ocu = ocupado):\n");
             gets(registro.status);
         }
         while((strcmp(registro.status, "des") != 0 && strcmp(registro.status, "ocu") != 0));
         fprintf(quarto, "\n%d;%d;%.2f;%s;", registro.numeroQuarto, registro.hospedes, registro.valorDiario, registro.status);
-        printf("Você deseja cadastrar mais um quarto('s' para sim e 'n' para não):\n");
+        printf("Voce deseja cadastrar mais um quarto('s' para sim e 'n' para nao):\n");
         scanf(" %c", &quarto2);
     }
     while(quarto2 != 'n');
     fclose (quarto);
 }
-
 void finalizarEstadia ()
 {
     int codigo, numQuarto, comparar;
@@ -508,7 +536,7 @@ void pesquisaPessoas()
     //pergunta ao usuario em que arquivo o codigo ira pesquisar e como
     do
     {
-        printf("Você deseja saber as informações de um Cliente ou de um Funcionário? Digite '1' para cliente e '2' para funcionário: ");
+        printf("Voce deseja saber as informacoes de um Cliente ou de um Funcionario? Digite '1' para cliente e '2' para funcionario: ");
         scanf("%d", &tipopessoa);
         while (getchar() != '\n');
     }
@@ -516,7 +544,7 @@ void pesquisaPessoas()
 
     do
     {
-        printf("Você deseja pesquisar usando o seu código ou seu nome? (se lembre que o nome deve ser exatamente igual ao cadastrado) Digite '1' para código e '2' para nome: ");
+        printf("Você deseja pesquisar usando o seu codigo ou seu nome? (se lembre que o nome deve ser exatamente igual ao cadastrado) Digite '1' para codigo e '2' para nome: ");
         scanf("%d", &tipopesquisa);
         while (getchar() != '\n');
     }
@@ -532,7 +560,7 @@ void pesquisaPessoas()
     }
     if(tipopesquisa == 1)
     {
-    printf("Digite o seu código:\n");
+    printf("Digite o seu codigo:\n");
     gets(codigo);
     }
     else
@@ -571,11 +599,11 @@ void pesquisaPessoas()
                 campo = strtok(NULL, delimitador);
                 if(strcmp(campo, nome) == 0)
                 {
-                    printf("o seu codigo é %s\n", codigo2);
+                    printf("o seu codigo e %s\n", codigo2);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu endereço é %s\n", campo);
+                    printf("O seu endereco e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu número é %s\n", campo);
+                    printf("O seu numero e %s\n", campo);
                     certo++;
                     break;
                 }
@@ -591,13 +619,13 @@ void pesquisaPessoas()
                 if(strcmp(campo, codigo) == 0)
                 {
                     campo = strtok(NULL, delimitador);
-                    printf("O seu nome é %s\n", campo);
+                    printf("O seu nome e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu cargo é %s\n", campo);
+                    printf("O seu cargo e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu número é %s\n", campo);
+                    printf("O seu numero e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu salário é %s\n", campo);
+                    printf("O seu salario e %s\n", campo);
                     certo++;
                     break;
                 }
@@ -610,13 +638,13 @@ void pesquisaPessoas()
                 campo = strtok(NULL, delimitador);
                 if(strcmp(campo, nome) == 0)
                 {
-                    printf("o seu codigo é %s\n", codigo2);
+                    printf("o seu codigo e %s\n", codigo2);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu cargo é %s\n", campo);
+                    printf("O seu cargo e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu número é %s\n", campo);
+                    printf("O seu numero e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu salário é %s\n", campo);
+                    printf("O seu salario e %s\n", campo);
                     certo++;
                     break;
                 }
@@ -626,9 +654,9 @@ void pesquisaPessoas()
 
     if(certo == 0)
     {
-        printf("Não foi possível encontrar nenhum Cliente/Funcionário com o Código/Nome digitado.\n");
+        printf("Não foi possivel encontrar nenhum Cliente/Funcionario com o Codigo/Nome digitado.\n");
     }
-
+    fflush(fluxo);
     fclose(fluxo);
 }
 void achaEstadia ()
@@ -658,7 +686,7 @@ void achaEstadia ()
             compCliente = atoi(campo);
             if(cliente == compCliente)
             {
-                printf("Estas são as informações da Estadia:\n");
+                printf("Estas sao as informacoes da Estadia:\n");
                 printf("Codigo Estadia: %d\n", codigo);
                 campo = strtok(NULL, delimitador);
                 diaEntrada = atoi(campo);
@@ -682,5 +710,6 @@ void achaEstadia ()
                 printf("Este é o numero do quarto: %d\n\n", numeroQuarto);
             }
         }
-
+    fflush(estadia);
+    fclose(estadia);
 }
