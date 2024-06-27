@@ -453,6 +453,7 @@ void finalizarEstadia ()
             custos = atof(campo);
             campo = strtok(NULL, delimitador);
             numQuarto = atoi(campo);
+            printf("%d\n", numQuarto);
          }
         if(comparar != codigo)
         {
@@ -473,13 +474,13 @@ void finalizarEstadia ()
             campo = strtok(NULL, delimitador);
             float preco = atof(campo);
             campo = strtok(NULL, delimitador);
-            numQuarto = atoi(campo);
+            int numQuarto2 = atoi(campo);
             fprintf(temp, "%d;%d;", comparar, cliente);
             fflush(temp);
             fprintf(temp, "%d;%d;%d;",diaen, mesen, anoen);
             fflush(temp);
             fprintf(temp, "%d;%d;%d;", diasa, mesai, anosa);
-            fprintf(temp, "%.2f;%d;\n", preco, numQuarto);
+            fprintf(temp, "%.2f;%d;\n", preco, numQuarto2);
             fflush(temp);
         }
      }
@@ -582,11 +583,11 @@ void pesquisaPessoas()
                 if(strcmp(campo, codigo) == 0)
                 {
                     campo = strtok(NULL, delimitador);
-                    printf("O seu nome é %s\n", campo);
+                    printf("O seu nome e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu endereço é %s\n", campo);
+                    printf("O seu endereco e %s\n", campo);
                     campo = strtok(NULL, delimitador);
-                    printf("O seu número é %s\n", campo);
+                    printf("O seu numero e %s\n", campo);
                     certo++;
                     break;
                 }
@@ -704,10 +705,10 @@ void achaEstadia ()
                 printf("Este foi o dia de saida: %d/%d/%d\n", diaSaida, mesSaida, anoSaida);
                 campo = strtok(NULL, delimitador);
                 valor = atoi(campo);
-                printf("Este é o valor a ser pago: %.2f\n", valor);
+                printf("Este e o valor a ser pago: %.2f\n", valor);
                 campo = strtok(NULL, delimitador);
                 numeroQuarto = atoi(campo);
-                printf("Este é o numero do quarto: %d\n\n", numeroQuarto);
+                printf("Este e o numero do quarto: %d\n\n", numeroQuarto);
             }
         }
     fflush(estadia);
